@@ -1,9 +1,13 @@
+require('dotenv').config()
 const express = require('express')
 const request = require('request');
 const xml = require('xml');
-
 const app = express()
-const port = 3000
+const http = require('http')
+
+const server = http.createServer(app)
+
+const port = process.env.PORT
 
 app.use(express.json())
 
@@ -19,7 +23,7 @@ app.post('/Z2V0WG1s', (req, res) => {
 
   request(url, function (error, response, body) {
     if (!error && response.statusCode == 200) {
-      console.log(body) // Print the google web page.
+      // console.log(body) // Print the google web page.
       res.type('application/xml');
       res.send(body)
     }
@@ -27,6 +31,6 @@ app.post('/Z2V0WG1s', (req, res) => {
 
 })
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+server.listen(port, function(err) {
+  console.log('listen at port: ' + port);
+});
