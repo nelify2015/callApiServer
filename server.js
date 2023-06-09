@@ -10,25 +10,29 @@ const server = http.createServer(app)
 const port = process.env.PORT
 
 app.use(express.json())
+// app.set('json spaces', 40);
 
-const urls = [
-  "https://www.td.gov.hk/tc/special_news/trafficnews.xml"
-]
+const urls = process.env.URLS.split(",")
 
-app.post('/Z2V0WG1s', (req, res) => {
-  const { url } = req.body
+const supportedTypes = process.env.SUPPORTED_TYPES.split(",")
+
+app.post('/Z2V0UmVzdWx0', (req, res) => {
+  const { url, dataType } = req.body
   
-  if ((!urls.includes(url)) || (typeof url ==='undefined'))
+  if ((!urls.includes(url)) || (typeof url ==='undefined') || (!supportedTypes.includes(dataType.toLowerCase())))
     res.status(400).send('Bad Request!')
 
   request(url, function (error, response, body) {
     if (!error && response.statusCode == 200) {
       // console.log(body) // Print the google web page.
-      res.type('application/xml');
-      res.send(body)
+      if (dataType.toLowerCase() === 'xml') {
+        res.type('application/xml')
+        res.send(body)
+      } else if (dataType.toLowerCase() === 'json') {
+        res.json(JSON.parse(body))
+      }
     }
   })
-
 })
 
 server.listen(port, function(err) {

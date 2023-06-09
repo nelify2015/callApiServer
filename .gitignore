@@ -9,7 +9,7 @@ lerna-debug.log*
 
 rest.txt
 
-.env
+*.env
 
 node_modules
 dist
